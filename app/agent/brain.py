@@ -1,13 +1,15 @@
 import os
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-model = genai.GenerativeModel("gemini-1.5-flash")
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 def think(messages: list) -> str:
     last_message = messages[-1]["content"]
-    response = model.generate_content(last_message)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        contents=last_message
+    )
     return response.text
