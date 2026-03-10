@@ -1,5 +1,6 @@
-anthropic
+google-generativeai
 langgraph
 fastapi
 uvicorn
 python-dotenv
+httpx

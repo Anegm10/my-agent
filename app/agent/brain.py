@@ -1,33 +1,13 @@
 import os
-from anthropic import Anthropic
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 load_dotenv()
 
-client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-1.5-flash")
 
-tools = [
-    {
-        "name": "search_web",
-        "description": "ابحث على الإنترنت عن أي معلومة",
-        "input_schema": {
-            "type": "object",
-            "properties": {
-                "query": {
-                    "type": "string",
-                    "description": "الموضوع اللي هتبحث عنه"
-                }
-            },
-            "required": ["query"]
-        }
-    }
-]
-
-def think(messages: list) -> dict:
-    response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1000,
-        tools=tools,
-        messages=messages
-    )
-    return response
+def think(messages: list) -> str:
+    last_message = messages[-1]["content"]
+    response = model.generate_content(last_message)
+    return response.text
